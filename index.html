@@ -57,30 +57,43 @@
             display: flex;
             align-items: center;
             margin-top: 5px;
+            flex-wrap: wrap;
         }
         
         .prompt {
             color: #00ff00;
             white-space: nowrap;
             margin-right: 5px;
+        }
+        
+        .input-container {
             display: flex;
             align-items: center;
+            position: relative;
+            flex-grow: 1;
+        }
+        
+        .input-display {
+            color: #ffffff;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
         }
         
         .command-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
             background-color: transparent;
             border: none;
-            color: #ffffff;
+            color: transparent;
             font-family: 'Courier New', monospace;
             font-size: 16px;
-            width: 100%;
             outline: none;
-            caret-color: transparent; /* 隐藏原生光标 */
-        }
-        
-        .output {
-            margin-bottom: 15px;
-            line-height: 1.6;
+            caret-color: transparent;
+            z-index: 10;
         }
         
         .cursor {
@@ -90,12 +103,16 @@
             background-color: #00ff00;
             animation: blink 1s infinite;
             vertical-align: middle;
-            margin-left: 2px;
         }
         
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
+        }
+        
+        .output {
+            margin-bottom: 15px;
+            line-height: 1.6;
         }
         
         .menu {
@@ -168,25 +185,6 @@
         .command-history {
             opacity: 0.7;
         }
-        
-        /* 隐藏输入框但保持可编辑 */
-        .input-container {
-            position: relative;
-            width: 100%;
-        }
-        
-        .input-container input {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            opacity: 0;
-            z-index: 10;
-        }
-        
-        .input-container .input-display {
-            color: #ffffff;
-        }
     </style>
 </head>
 <body>
@@ -253,10 +251,11 @@
             <div id="command-history"></div>
             
             <div class="command-line">
-                <span class="prompt">C:\HOME\><span class="cursor" id="cursor"></span></span>
+                <span class="prompt">C:\HOME\></span>
                 <div class="input-container">
-                    <input type="text" class="command-input" id="command-input" autocomplete="off" autofocus>
                     <span class="input-display" id="input-display"></span>
+                    <span class="cursor" id="cursor"></span>
+                    <input type="text" class="command-input" id="command-input" autocomplete="off" autofocus>
                 </div>
             </div>
         </div>
@@ -285,7 +284,7 @@
 <span class="highlight">CLEAR</span> - 清屏<br>
 <span class="highlight">DATE</span> - 显示当前日期和时间<br>
 <span class="highlight">THEME</span> - 切换主题颜色<br>
-<span class="highlight">EXIT</span> - 退出系统<br>
+<span class="highlight">EXIT</span> - 退出系统（只是玩笑）<br>
 <br>
 <span class="system">你也可以点击上面的菜单项来执行命令。</span>
                     `;
@@ -295,12 +294,12 @@
                 description: '关于我',
                 execute: function() {
                     return `
-<span class="info">=== About Me ===</span><br>
-<span class="highlight">Name:</span> Haowei Guo<br>
-<span class="highlight">Title:</span> PhD Student in Physics<br>
-<span class="highlight">Location:</span> Chongqing University<br>
-<span class="highlight">Skills:</span> JavaScript, Python, React, Node.js<br>
-<span class="highlight">Interest:</span> Computional Physics, Programming, Gamming<br>
+<span class="info">=== 关于我 ===</span><br>
+<span class="highlight">姓名:</span> 张三<br>
+<span class="highlight">职业:</span> 全栈开发工程师<br>
+<span class="highlight">地点:</span> 数字世界<br>
+<span class="highlight">技能:</span> JavaScript, Python, React, Node.js<br>
+<span class="highlight">兴趣:</span> 复古计算, 编程, 游戏开发<br>
 <br>
 <span class="system">我热爱创造有趣的项目和探索新技术。</span>
                     `;
@@ -477,6 +476,10 @@
             // 更新输入显示
             function updateInputDisplay() {
                 inputDisplay.textContent = commandInput.value;
+                
+                // 确保光标始终可见
+                const content = document.getElementById('content');
+                content.scrollTop = content.scrollHeight;
             }
             
             // 监听键盘事件
@@ -496,7 +499,7 @@
                         updateInputDisplay();
                     } else {
                         // 空命令，只显示提示符
-                        addOutput('<span class="prompt">C:\\HOME\\><span class="cursor"></span></span>');
+                        addOutput('<span class="prompt">C:\\HOME\\></span>');
                     }
                 } else if (e.key === 'ArrowUp') {
                     // 上箭头 - 历史记录中的上一条命令
@@ -544,14 +547,13 @@
             
             // 添加初始提示
             addOutput('<span class="system">输入 HELP 查看所有可用命令。</span>');
-            addOutput('<span class="prompt">C:\\HOME\\><span class="cursor"></span></span>');
         });
         
         // 执行命令
         function executeCommand(command) {
             const outputElement = document.createElement('div');
             outputElement.className = 'output command-history';
-            outputElement.innerHTML = `<span class="prompt">C:\\HOME\\><span class="cursor"></span></span> ${command}`;
+            outputElement.innerHTML = `<span class="prompt">C:\\HOME\\></span> ${command}`;
             
             document.getElementById('command-history').appendChild(outputElement);
             
