@@ -63,6 +63,8 @@
             color: #00ff00;
             white-space: nowrap;
             margin-right: 5px;
+            display: flex;
+            align-items: center;
         }
         
         .command-input {
@@ -73,7 +75,7 @@
             font-size: 16px;
             width: 100%;
             outline: none;
-            caret-color: #00ff00;
+            caret-color: transparent; /* 隐藏原生光标 */
         }
         
         .output {
@@ -88,6 +90,7 @@
             background-color: #00ff00;
             animation: blink 1s infinite;
             vertical-align: middle;
+            margin-left: 2px;
         }
         
         @keyframes blink {
@@ -165,6 +168,25 @@
         .command-history {
             opacity: 0.7;
         }
+        
+        /* 隐藏输入框但保持可编辑 */
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .input-container input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            opacity: 0;
+            z-index: 10;
+        }
+        
+        .input-container .input-display {
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -185,17 +207,16 @@
             
             <div class="output">
                 <span class="info">=== USER PROFILE ===</span><br>
-                <span class="highlight">Name:</span> Haowei Guo<br>
-                <span class="highlight">Title:</span> Ph.D. student in Physics<br>
-                <span class="highlight">Location:</span> Chongqing University<br>
-                <span class="highlight">Interests:</span> Computational physics, Programming, Gaming, Formula 1<br><br>
+                <span class="highlight">Name:</span> John Doe<br>
+                <span class="highlight">Title:</span> Software Developer & DOS Enthusiast<br>
+                <span class="highlight">Location:</span> Digital Realm<br>
+                <span class="highlight">Interests:</span> Retro Computing, Programming, Gaming<br><br>
             </div>
             
-<!--             <div class="output">
+            <div class="output">
                 <span class="info">=== MAIN MENU ===</span><br>
                 <span class="success">Type <span class="highlight">HELP</span> for available commands or click a menu item:</span><br><br>
-            </div> 
--->
+            </div>
             
             <div class="menu">
                 <div class="menu-item" onclick="runCommand('blog')">
@@ -232,9 +253,11 @@
             <div id="command-history"></div>
             
             <div class="command-line">
-                <span class="prompt">C:\HOME\></span>
-                <input type="text" class="command-input" id="command-input" autocomplete="off" autofocus>
-                <span class="cursor" id="cursor"></span>
+                <span class="prompt">C:\HOME\><span class="cursor" id="cursor"></span></span>
+                <div class="input-container">
+                    <input type="text" class="command-input" id="command-input" autocomplete="off" autofocus>
+                    <span class="input-display" id="input-display"></span>
+                </div>
             </div>
         </div>
         
@@ -262,7 +285,7 @@
 <span class="highlight">CLEAR</span> - 清屏<br>
 <span class="highlight">DATE</span> - 显示当前日期和时间<br>
 <span class="highlight">THEME</span> - 切换主题颜色<br>
-<span class="highlight">EXIT</span> - 退出系统（只是玩笑）<br>
+<span class="highlight">EXIT</span> - 退出系统<br>
 <br>
 <span class="system">你也可以点击上面的菜单项来执行命令。</span>
                     `;
@@ -272,12 +295,12 @@
                 description: '关于我',
                 execute: function() {
                     return `
-<span class="info">=== 关于我 ===</span><br>
-<span class="highlight">姓名:</span> 张三<br>
-<span class="highlight">职业:</span> 全栈开发工程师<br>
-<span class="highlight">地点:</span> 数字世界<br>
-<span class="highlight">技能:</span> JavaScript, Python, React, Node.js<br>
-<span class="highlight">兴趣:</span> 复古计算, 编程, 游戏开发<br>
+<span class="info">=== About Me ===</span><br>
+<span class="highlight">Name:</span> Haowei Guo<br>
+<span class="highlight">Title:</span> PhD Student in Physics<br>
+<span class="highlight">Location:</span> Chongqing University<br>
+<span class="highlight">Skills:</span> JavaScript, Python, React, Node.js<br>
+<span class="highlight">Interest:</span> Computional Physics, Programming, Gamming<br>
 <br>
 <span class="system">我热爱创造有趣的项目和探索新技术。</span>
                     `;
@@ -365,7 +388,7 @@
                     return `
 <span class="info">=== 有用链接 ===</span><br>
 • <span class="highlight">个人博客:</span> https://example.com<br>
-• <span class="highlight作品集:</span> https://example.com/portfolio<br>
+• <span class="highlight">作品集:</span> https://example.com/portfolio<br>
 • <span class="highlight">GitHub:</span> https://github.com/username<br>
 • <span class="highlight">Codepen:</span> https://codepen.io/username<br>
 • <span class="highlight">学习资源:</span> https://example.com/resources<br>
@@ -442,6 +465,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const commandInput = document.getElementById('command-input');
+            const inputDisplay = document.getElementById('input-display');
             const content = document.getElementById('content');
             const cursor = document.getElementById('cursor');
             
@@ -449,6 +473,11 @@
             setInterval(() => {
                 cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
             }, 500);
+            
+            // 更新输入显示
+            function updateInputDisplay() {
+                inputDisplay.textContent = commandInput.value;
+            }
             
             // 监听键盘事件
             commandInput.addEventListener('keydown', function(e) {
@@ -464,9 +493,10 @@
                         
                         // 清空输入框
                         commandInput.value = '';
+                        updateInputDisplay();
                     } else {
                         // 空命令，只显示提示符
-                        addOutput('<span class="prompt">C:\\HOME\\></span>');
+                        addOutput('<span class="prompt">C:\\HOME\\><span class="cursor"></span></span>');
                     }
                 } else if (e.key === 'ArrowUp') {
                     // 上箭头 - 历史记录中的上一条命令
@@ -476,6 +506,7 @@
                             historyIndex--;
                         }
                         commandInput.value = commandHistory[historyIndex] || '';
+                        updateInputDisplay();
                     }
                 } else if (e.key === 'ArrowDown') {
                     // 下箭头 - 历史记录中的下一条命令
@@ -488,6 +519,7 @@
                             historyIndex = commandHistory.length;
                             commandInput.value = '';
                         }
+                        updateInputDisplay();
                     }
                 } else if (e.key === 'Tab') {
                     // Tab键 - 自动补全
@@ -499,6 +531,7 @@
                         );
                         if (matches.length === 1) {
                             commandInput.value = matches[0];
+                            updateInputDisplay();
                         } else if (matches.length > 1) {
                             addOutput(`<span class="system">可能的命令: ${matches.join(', ')}</span>`);
                         }
@@ -506,16 +539,19 @@
                 }
             });
             
+            // 监听输入变化
+            commandInput.addEventListener('input', updateInputDisplay);
+            
             // 添加初始提示
             addOutput('<span class="system">输入 HELP 查看所有可用命令。</span>');
-            addOutput('<span class="prompt">C:\\HOME\\></span>');
+            addOutput('<span class="prompt">C:\\HOME\\><span class="cursor"></span></span>');
         });
         
         // 执行命令
         function executeCommand(command) {
             const outputElement = document.createElement('div');
             outputElement.className = 'output command-history';
-            outputElement.innerHTML = `<span class="prompt">C:\\HOME\\></span> ${command}`;
+            outputElement.innerHTML = `<span class="prompt">C:\\HOME\\><span class="cursor"></span></span> ${command}`;
             
             document.getElementById('command-history').appendChild(outputElement);
             
