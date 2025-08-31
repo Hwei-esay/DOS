@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人网站 - GitHub Pages示例</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        /* 导航栏 */
+        nav {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #6a11cb;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #6a11cb;
+        }
+        
+        /* 内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .post {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .post h3 {
+            margin-bottom: 10px;
+        }
+        
+        .post-meta {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        /* 侧边栏 */
+        .sidebar-widget {
+            margin-bottom: 30px;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        /* 教程步骤 */
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding-left: 60px;
+            position: relative;
+        }
+        
+        .step:before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 45px;
+            height: 45px;
+            background: #6a11cb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: #343a40;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .social-links {
+            margin-bottom: 20px;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #6a11cb;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                margin-top: 15px;
+            }
+            
+            .nav-links li {
+                margin: 0 10px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="container header-content">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Profile" class="profile-img">
+            <h1>我的个人网站</h1>
+            <p class="tagline">开发者 | 设计师 | 技术爱好者</p>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">MySite</div>
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="#"><i class="fas fa-pen"></i> 博客</a></li>
+                <li><a href="#"><i class="fas fa-project-diagram"></i> 项目</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> 关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 左侧内容 -->
+            <div class="left-column">
+                <div class="card">
+                    <h2>最新文章</h2>
+                    <div class="post">
+                        <h3>使用GitHub Pages搭建个人网站</h3>
+                        <div class="post-meta">
+                            <i class="far fa-calendar"></i> 2023年10月20日 | 
+                            <i class="far fa-folder"></i> 网站开发
+                        </div>
+                        <p>GitHub Pages提供了一个简单的方式为每个GitHub账户和组织免费托管一个网站。本文将介绍如何使用GitHub Pages搭建个人网站。</p>
+                        <a href="#">阅读更多 &rarr;</a>
+                    </div>
+                    <div class="post">
+                        <h3>前端开发的最佳实践</h3>
+                        <div class="post-meta">
+                            <i class="far fa-calendar"></i> 2023年9月15日 | 
+                            <i class="far fa-folder"></i> 前端开发
+                        </div>
+                        <p>保持代码整洁和可维护性是前端开发中的重要方面。本文分享一些前端开发的最佳实践和技巧。</p>
+                        <a href="#">阅读更多 &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>GitHub Pages部署教程</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <h3>创建GitHub账户</h3>
+                            <p>如果您还没有GitHub账户，请先访问 <a href="https://github.com/" target="_blank">github.com</a> 注册一个免费账户。</p>
+                        </div>
+                        <div class="step">
+                            <h3>创建新的代码仓库</h3>
+                            <p>登录GitHub后，点击右上角的"+"图标，选择"New repository"。仓库名必须格式为：<strong>你的用户名.github.io</strong></p>
+                        </div>
+                        <div class="step">
+                            <h3>上传网站文件</h3>
+                            <p>将您的网站文件（HTML、CSS、JS等）上传到该仓库。您可以使用Git命令行或直接在GitHub网站上上传。</p>
+                        </div>
+                        <div class="step">
+                            <h3>访问您的网站</h3>
+                            <p>上传完成后，访问 https://你的用户名.github.io 即可查看您的网站。最初可能需要几分钟才能生效。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏 -->
+            <div class="sidebar">
+                <div class="card sidebar-widget">
+                    <h2>关于我</h2>
+                    <p>您好！我是一名前端开发者和技术博客作者，喜欢分享技术知识和学习经验。</p>
+                    <a href="#" class="button">了解更多 &rarr;</a>
+                </div>
+
+                <div class="card sidebar-widget">
+                    <h2>分类</h2>
+                    <ul>
+                        <li><a href="#">网站开发 (12)</a></li>
+                        <li><a href="#">前端技术 (8)</a></li>
+                        <li><a href="#">JavaScript (15)</a></li>
+                        <li><a href="#">CSS技巧 (10)</a></li>
+                        <li><a href="#">Git & GitHub (5)</a></li>
+                    </ul>
+                </div>
+
+                <div class="card sidebar-widget">
+                    <h2>标签云</h2>
+                    <div class="tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">GitHub</span>
+                        <span class="tag">响应式设计</span>
+                        <span class="tag">Web开发</span>
+                        <span class="tag">教程</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-codepen"></i></a>
+            </div>
+            <p>&copy; 2023 我的个人网站. 使用GitHub Pages部署</p>
+            <p>本网站采用 GitHub Pages 服务搭建</p>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的JavaScript代码，用于实现导航栏的固定效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.2)';
+            } else {
+                nav.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+        
+        // 添加一个简单的动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.style.opacity = 0;
+                step.style.transform = 'translateY(20px)';
+                step.style.transition = `opacity 0.5s ease ${index * 0.2}s, transform 0.5s ease ${index * 0.2}s`;
+                
+                setTimeout(() => {
+                    step.style.opacity = 1;
+                    step.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
