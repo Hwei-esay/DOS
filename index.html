@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOS风格个人主页</title>
+    <title>交互式DOS风格主页</title>
     <style>
         * {
             margin: 0;
@@ -53,22 +53,27 @@
             flex-direction: column;
         }
         
-        .prompt {
-            color: #00ff00;
-            margin-bottom: 10px;
+        .command-line {
             display: flex;
             align-items: center;
+            margin-top: 5px;
         }
         
-        .command {
+        .prompt {
+            color: #00ff00;
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+        
+        .command-input {
             background-color: transparent;
             border: none;
             color: #ffffff;
             font-family: 'Courier New', monospace;
             font-size: 16px;
-            width: 80%;
+            width: 100%;
             outline: none;
-            margin-left: 5px;
+            caret-color: #00ff00;
         }
         
         .output {
@@ -135,6 +140,10 @@
             color: #00aaff;
         }
         
+        .system {
+            color: #c0c0c0;
+        }
+        
         /* 滚动条样式 */
         ::-webkit-scrollbar {
             width: 10px;
@@ -151,6 +160,11 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #00ff00;
         }
+        
+        /* 命令历史样式 */
+        .command-history {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -160,7 +174,7 @@
             <div>Personal Home Directory</div>
         </div>
         
-        <div class="content">
+        <div class="content" id="content">
             <div class="output">
                 <span class="success">Microsoft(R) MS-DOS(R) Version 6.22</span><br>
                 <span class="success">(C)Copyright Microsoft Corp 1981-1994.</span><br><br>
@@ -179,31 +193,31 @@
             
             <div class="output">
                 <span class="info">=== MAIN MENU ===</span><br>
-                <span class="success">Select an option below or type a command:</span><br><br>
+                <span class="success">Type <span class="highlight">HELP</span> for available commands or click a menu item:</span><br><br>
             </div>
             
             <div class="menu">
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('blog')">
                     <span class="highlight">1. BLOG</span><br>
                     Read my latest articles
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('projects')">
                     <span class="highlight">2. PROJECTS</span><br>
                     View my coding projects
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('contact')">
                     <span class="highlight">3. CONTACT</span><br>
                     Get in touch with me
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('skills')">
                     <span class="highlight">4. SKILLS</span><br>
                     My technical abilities
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('games')">
                     <span class="highlight">5. GAMES</span><br>
                     Play some retro games
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="runCommand('links')">
                     <span class="highlight">6. LINKS</span><br>
                     Useful resources
                 </div>
@@ -211,53 +225,443 @@
             
             <div class="output">
                 <br>
-                <span class="info">C:\HOME\></span>
-                <span class="cursor"></span>
+                <span class="info">Type <span class="highlight">HELP</span> to see all available commands.</span><br>
+            </div>
+            
+            <div id="command-history"></div>
+            
+            <div class="command-line">
+                <span class="prompt">C:\HOME\></span>
+                <input type="text" class="command-input" id="command-input" autocomplete="off" autofocus>
+                <span class="cursor" id="cursor"></span>
             </div>
         </div>
         
         <div class="footer">
-            Press F1 for help | F2 for commands list | F10 to exit
+            Press F1 for help | ↑↓ to browse command history | TAB for auto-complete
         </div>
     </div>
 
     <script>
+        // 命令列表和对应的响应
+        const commands = {
+            'help': {
+                description: '显示所有可用命令',
+                execute: function() {
+                    return `
+<span class="info">=== 可用命令 ===</span><br>
+<span class="highlight">HELP</span> - 显示所有可用命令<br>
+<span class="highlight">ABOUT</span> - 关于我<br>
+<span class="highlight">BLOG</span> - 查看我的博客文章<br>
+<span class="highlight">PROJECTS</span> - 查看我的项目<br>
+<span class="highlight">CONTACT</span> - 联系信息<br>
+<span class="highlight">SKILLS</span> - 我的技能<br>
+<span class="highlight">GAMES</span> - 玩一些小游戏<br>
+<span class="highlight">LINKS</span> - 有用的链接<br>
+<span class="highlight">CLEAR</span> - 清屏<br>
+<span class="highlight">DATE</span> - 显示当前日期和时间<br>
+<span class="highlight">THEME</span> - 切换主题颜色<br>
+<span class="highlight">EXIT</span> - 退出系统（只是玩笑）<br>
+<br>
+<span class="system">你也可以点击上面的菜单项来执行命令。</span>
+                    `;
+                }
+            },
+            'about': {
+                description: '关于我',
+                execute: function() {
+                    return `
+<span class="info">=== 关于我 ===</span><br>
+<span class="highlight">姓名:</span> 张三<br>
+<span class="highlight">职业:</span> 全栈开发工程师<br>
+<span class="highlight">地点:</span> 数字世界<br>
+<span class="highlight">技能:</span> JavaScript, Python, React, Node.js<br>
+<span class="highlight">兴趣:</span> 复古计算, 编程, 游戏开发<br>
+<br>
+<span class="system">我热爱创造有趣的项目和探索新技术。</span>
+                    `;
+                }
+            },
+            'blog': {
+                description: '查看我的博客文章',
+                execute: function() {
+                    return `
+<span class="info">=== 最新博客文章 ===</span><br>
+1. <span class="highlight">使用JavaScript创建DOS界面</span> - 2023-10-20<br>
+   <span class="system">学习如何创建具有交互性的复古终端界面</span><br>
+<br>
+2. <span class="highlight">Web开发的未来</span> - 2023-09-15<br>
+   <span class="system">探索Web开发的新趋势和技术</span><br>
+<br>
+3. <span class="highlight">复古游戏编程</span> - 2023-08-05<br>
+   <span class="system">如何使用现代技术重新创建经典游戏</span><br>
+<br>
+<span class="system">访问我的博客: https://example.com/blog</span>
+                    `;
+                }
+            },
+            'projects': {
+                description: '查看我的项目',
+                execute: function() {
+                    return `
+<span class="info">=== 我的项目 ===</span><br>
+1. <span class="highlight">终端模拟器</span> - 基于Web的终端模拟器<br>
+2. <span class="highlight">复古游戏合集</span> - 经典游戏的Web版本<br>
+3. <span class="highlight">个人知识管理系统</span> - 基于Markdown的知识库<br>
+4. <span class="highlight">天气CLI应用</span> - 命令行天气应用<br>
+<br>
+<span class="system">访问我的GitHub: https://github.com/username</span>
+                    `;
+                }
+            },
+            'contact': {
+                description: '联系信息',
+                execute: function() {
+                    return `
+<span class="info">=== 联系我 ===</span><br>
+<span class="highlight">Email:</span> user@example.com<br>
+<span class="highlight">GitHub:</span> https://github.com/username<br>
+<span class="highlight">Twitter:</span> @username<br>
+<span class="highlight">LinkedIn:</span> https://linkedin.com/in/username<br>
+<br>
+<span class="system">欢迎联系我讨论项目或合作机会!</span>
+                    `;
+                }
+            },
+            'skills': {
+                description: '我的技能',
+                execute: function() {
+                    return `
+<span class="info">=== 技术技能 ===</span><br>
+<span class="highlight">前端:</span> HTML, CSS, JavaScript, React, Vue<br>
+<span class="highlight">后端:</span> Node.js, Python, PHP, MySQL, MongoDB<br>
+<span class="highlight">工具:</span> Git, Docker, Webpack, VS Code<br>
+<span class="highlight">其他:</span> UI/UX设计, 项目管理, 技术写作<br>
+<br>
+<span class="system">持续学习新技术中...</span>
+                    `;
+                }
+            },
+            'games': {
+                description: '玩一些小游戏',
+                execute: function() {
+                    return `
+<span class="info">=== 可用游戏 ===</span><br>
+1. <span class="highlight">猜数字游戏</span> - 猜一个1-100之间的数字<br>
+   <span class="system">输入 GUESS 来开始游戏</span><br>
+<br>
+2. <span class="highlight">井字棋</span> - 经典的井字棋游戏<br>
+   <span class="system">输入 TICTACTOE 来开始游戏</span><br>
+<br>
+3. <span class="highlight">文本冒险</span> - 基于文本的冒险游戏<br>
+   <span class="system">输入 ADVENTURE 来开始游戏</span><br>
+                    `;
+                }
+            },
+            'links': {
+                description: '有用的链接',
+                execute: function() {
+                    return `
+<span class="info">=== 有用链接 ===</span><br>
+• <span class="highlight">个人博客:</span> https://example.com<br>
+• <span class="highlight作品集:</span> https://example.com/portfolio<br>
+• <span class="highlight">GitHub:</span> https://github.com/username<br>
+• <span class="highlight">Codepen:</span> https://codepen.io/username<br>
+• <span class="highlight">学习资源:</span> https://example.com/resources<br>
+<br>
+<span class="system">这些是我经常访问和分享资源的网站。</span>
+                    `;
+                }
+            },
+            'clear': {
+                description: '清屏',
+                execute: function() {
+                    const history = document.getElementById('command-history');
+                    history.innerHTML = '';
+                    return '<span class="system">屏幕已清除。</span>';
+                }
+            },
+            'date': {
+                description: '显示当前日期和时间',
+                execute: function() {
+                    const now = new Date();
+                    return `<span class="system">当前日期和时间: ${now.toLocaleString()}</span>`;
+                }
+            },
+            'theme': {
+                description: '切换主题颜色',
+                execute: function() {
+                    const body = document.body;
+                    if (body.classList.contains('blue-theme')) {
+                        body.classList.remove('blue-theme');
+                        body.classList.add('amber-theme');
+                        return '<span class="system">主题已切换为琥珀色。</span>';
+                    } else if (body.classList.contains('amber-theme')) {
+                        body.classList.remove('amber-theme');
+                        body.classList.add('red-theme');
+                        return '<span class="system">主题已切换为红色。</span>';
+                    } else if (body.classList.contains('red-theme')) {
+                        body.classList.remove('red-theme');
+                        return '<span class="system">主题已恢复为默认绿色。</span>';
+                    } else {
+                        body.classList.add('blue-theme');
+                        return '<span class="system">主题已切换为蓝色。</span>';
+                    }
+                }
+            },
+            'exit': {
+                description: '退出系统',
+                execute: function() {
+                    return `<span class="error">无法退出系统 - 这是一个网页！😂</span><br>
+<span class="system">尝试关闭浏览器标签来"退出"。</span>`;
+                }
+            },
+            'guess': {
+                description: '猜数字游戏',
+                execute: function() {
+                    // 初始化游戏
+                    if (!window.guessGame) {
+                        window.guessGame = {
+                            number: Math.floor(Math.random() * 100) + 1,
+                            attempts: 0
+                        };
+                    }
+                    
+                    return `<span class="info">=== 猜数字游戏 ===</span><br>
+<span class="system">我已想了一个1-100之间的数字。</span><br>
+<span class="system">输入你的猜测: GUESS [数字]</span><br>
+<span class="system">例如: GUESS 50</span>`;
+                }
+            }
+        };
+
+        // 命令历史记录
+        let commandHistory = [];
+        let historyIndex = -1;
+
         document.addEventListener('DOMContentLoaded', function() {
-            const content = document.querySelector('.content');
-            const cursor = document.querySelector('.cursor');
+            const commandInput = document.getElementById('command-input');
+            const content = document.getElementById('content');
+            const cursor = document.getElementById('cursor');
             
-            // 添加命令行交互效果
-            setTimeout(() => {
-                addOutput('Type <span class="highlight">HELP</span> for available commands.');
-            }, 1000);
-            
-            // 模拟闪烁的光标
+            // 闪烁光标
             setInterval(() => {
                 cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
             }, 500);
             
-            // 添加一些随机输出效果
-            setTimeout(() => {
-                addOutput('<span class="info">System:</span> Memory check completed successfully.');
-            }, 3000);
-            
-            // 添加输出函数
-            function addOutput(text) {
-                const output = document.createElement('div');
-                output.className = 'output';
-                output.innerHTML = text;
-                content.insertBefore(output, content.lastElementChild);
-                content.scrollTop = content.scrollHeight;
-            }
-            
-            // 添加键盘交互
-            document.addEventListener('keydown', function(e) {
+            // 监听键盘事件
+            commandInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    addOutput('<span class="info">C:\\HOME\\></span> <span class="error">Bad command or file name</span>');
-                    addOutput('<span class="info">C:\\HOME\\></span>');
+                    const command = commandInput.value.trim().toLowerCase();
+                    if (command) {
+                        // 添加到历史记录
+                        commandHistory.push(command);
+                        historyIndex = commandHistory.length;
+                        
+                        // 执行命令
+                        executeCommand(command);
+                        
+                        // 清空输入框
+                        commandInput.value = '';
+                    } else {
+                        // 空命令，只显示提示符
+                        addOutput('<span class="prompt">C:\\HOME\\></span>');
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    // 上箭头 - 历史记录中的上一条命令
+                    e.preventDefault();
+                    if (commandHistory.length > 0) {
+                        if (historyIndex > 0) {
+                            historyIndex--;
+                        }
+                        commandInput.value = commandHistory[historyIndex] || '';
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    // 下箭头 - 历史记录中的下一条命令
+                    e.preventDefault();
+                    if (commandHistory.length > 0) {
+                        if (historyIndex < commandHistory.length - 1) {
+                            historyIndex++;
+                            commandInput.value = commandHistory[historyIndex] || '';
+                        } else {
+                            historyIndex = commandHistory.length;
+                            commandInput.value = '';
+                        }
+                    }
+                } else if (e.key === 'Tab') {
+                    // Tab键 - 自动补全
+                    e.preventDefault();
+                    const input = commandInput.value.toLowerCase();
+                    if (input) {
+                        const matches = Object.keys(commands).filter(cmd => 
+                            cmd.startsWith(input)
+                        );
+                        if (matches.length === 1) {
+                            commandInput.value = matches[0];
+                        } else if (matches.length > 1) {
+                            addOutput(`<span class="system">可能的命令: ${matches.join(', ')}</span>`);
+                        }
+                    }
                 }
             });
+            
+            // 添加初始提示
+            addOutput('<span class="system">输入 HELP 查看所有可用命令。</span>');
+            addOutput('<span class="prompt">C:\\HOME\\></span>');
         });
+        
+        // 执行命令
+        function executeCommand(command) {
+            const outputElement = document.createElement('div');
+            outputElement.className = 'output command-history';
+            outputElement.innerHTML = `<span class="prompt">C:\\HOME\\></span> ${command}`;
+            
+            document.getElementById('command-history').appendChild(outputElement);
+            
+            // 处理猜数字游戏
+            if (window.guessGame && command.startsWith('guess ')) {
+                const guess = parseInt(command.split(' ')[1]);
+                if (isNaN(guess)) {
+                    addOutput('<span class="error">请输入一个有效的数字!</span>');
+                } else {
+                    window.guessGame.attempts++;
+                    if (guess === window.guessGame.number) {
+                        addOutput(`<span class="success">恭喜! 你在 ${window.guessGame.attempts} 次尝试后猜对了!</span>`);
+                        delete window.guessGame;
+                    } else if (guess < window.guessGame.number) {
+                        addOutput(`<span class="info">尝试更大的数字。这是你的第 ${window.guessGame.attempts} 次尝试。</span>`);
+                    } else {
+                        addOutput(`<span class="info">尝试更小的数字。这是你的第 ${window.guessGame.attempts} 次尝试。</span>`);
+                    }
+                }
+                return;
+            }
+            
+            // 处理其他命令
+            if (commands[command]) {
+                const result = commands[command].execute();
+                addOutput(result);
+            } else {
+                addOutput(`<span class="error">'${command}' 不是内部或外部命令，也不是可运行的程序或批处理文件。</span><br>
+<span class="system">输入 HELP 查看所有可用命令。</span>`);
+            }
+        }
+        
+        // 添加输出到终端
+        function addOutput(html) {
+            const outputElement = document.createElement('div');
+            outputElement.className = 'output';
+            outputElement.innerHTML = html;
+            
+            document.getElementById('command-history').appendChild(outputElement);
+            
+            // 滚动到底部
+            const content = document.getElementById('content');
+            content.scrollTop = content.scrollHeight;
+        }
+        
+        // 从菜单运行命令
+        function runCommand(command) {
+            const commandInput = document.getElementById('command-input');
+            commandInput.value = command;
+            const event = new KeyboardEvent('keydown', { key: 'Enter' });
+            commandInput.dispatchEvent(event);
+        }
     </script>
+
+    <style>
+        /* 蓝色主题 */
+        .blue-theme {
+            --primary-color: #0088ff;
+        }
+        
+        .blue-theme .dos-container {
+            border-color: #0088ff;
+            box-shadow: 0 0 15px rgba(0, 136, 255, 0.3);
+        }
+        
+        .blue-theme .header,
+        .blue-theme .footer {
+            background-color: #000055;
+        }
+        
+        .blue-theme .prompt,
+        .blue-theme .cursor,
+        .blue-theme .success {
+            color: #0088ff;
+        }
+        
+        .blue-theme .menu-item {
+            border-color: #0088ff;
+            background-color: #001133;
+        }
+        
+        .blue-theme .menu-item:hover {
+            background-color: #002244;
+            box-shadow: 0 0 10px #0088ff;
+        }
+        
+        /* 琥珀色主题 */
+        .amber-theme {
+            --primary-color: #ffaa00;
+        }
+        
+        .amber-theme .dos-container {
+            border-color: #ffaa00;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+        }
+        
+        .amber-theme .header,
+        .amber-theme .footer {
+            background-color: #553300;
+        }
+        
+        .amber-theme .prompt,
+        .amber-theme .cursor,
+        .amber-theme .success {
+            color: #ffaa00;
+        }
+        
+        .amber-theme .menu-item {
+            border-color: #ffaa00;
+            background-color: #332200;
+        }
+        
+        .amber-theme .menu-item:hover {
+            background-color: #443300;
+            box-shadow: 0 0 10px #ffaa00;
+        }
+        
+        /* 红色主题 */
+        .red-theme {
+            --primary-color: #ff4444;
+        }
+        
+        .red-theme .dos-container {
+            border-color: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+        }
+        
+        .red-theme .header,
+        .red-theme .footer {
+            background-color: #550000;
+        }
+        
+        .red-theme .prompt,
+        .red-theme .cursor,
+        .red-theme .success {
+            color: #ff4444;
+        }
+        
+        .red-theme .menu-item {
+            border-color: #ff4444;
+            background-color: #331111;
+        }
+        
+        .red-theme .menu-item:hover {
+            background-color: #442222;
+            box-shadow: 0 0 10px #ff4444;
+        }
+    </style>
 </body>
 </html>
