@@ -205,16 +205,16 @@
             
             <div class="output">
                 <span class="info">=== USER PROFILE ===</span><br>
-                <span class="highlight">Name:</span> John Doe<br>
-                <span class="highlight">Title:</span> Software Developer & DOS Enthusiast<br>
-                <span class="highlight">Location:</span> Digital Realm<br>
-                <span class="highlight">Interests:</span> Retro Computing, Programming, Gaming<br><br>
+                <span class="highlight">Name:</span> Haowei Guo<br>
+                <span class="highlight">Title:</span> PhD student in Physics<br>
+                <span class="highlight">Location:</span> CQU<br>
+                <span class="highlight">Interests:</span> Computional Physics, Programming, Gaming<br><br>
             </div>
             
-            <div class="output">
+<!--             <div class="output">
                 <span class="info">=== MAIN MENU ===</span><br>
                 <span class="success">Type <span class="highlight">HELP</span> for available commands or click a menu item:</span><br><br>
-            </div>
+            </div> -->
             
             <div class="menu">
                 <div class="menu-item" onclick="runCommand('blog')">
@@ -262,6 +262,7 @@
         
         <div class="footer">
             Press F1 for help | ↑↓ to browse command history | TAB for auto-complete
+    <div class="copyright">© 2025 Haowei Guo. All rights reserved.</div>
         </div>
     </div>
 
@@ -291,15 +292,15 @@
                 }
             },
             'about': {
-                description: '关于我',
+                description: 'About Me',
                 execute: function() {
                     return `
-<span class="info">=== 关于我 ===</span><br>
-<span class="highlight">姓名:</span> 张三<br>
-<span class="highlight">职业:</span> 全栈开发工程师<br>
-<span class="highlight">地点:</span> 数字世界<br>
-<span class="highlight">技能:</span> JavaScript, Python, React, Node.js<br>
-<span class="highlight">兴趣:</span> 复古计算, 编程, 游戏开发<br>
+<span class="info">=== About Me ===</span><br>
+<span class="highlight">Name:</span> Haowei Guo<br>
+<span class="highlight">Title:</span> PhD student in Physics<br>
+<span class="highlight">Location:</span> CQU<br>
+<span class="highlight">Skills:</span> JavaScript, Python, React, Node.js<br>
+<span class="highlight">Interests:</span> Computional Physics, Programming, Gaming<br>
 <br>
 <span class="system">我热爱创造有趣的项目和探索新技术。</span>
                     `;
