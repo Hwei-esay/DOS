@@ -3,167 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>简洁个人主页</title>
+    <title>DOS风格个人主页</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         body {
-            background: #f8f9fa;
-            color: #212529;
-            line-height: 1.6;
-            min-height: 100vh;
+            background-color: #000;
+            color: #c0c0c0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #002200 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #002200 0%, transparent 50%);
+        }
+        
+        .dos-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            background-color: #000;
+            height: 90vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
         
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 25px;
-            border: 4px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #212529;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            color: #6c757d;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-        
-        .category {
-            margin-bottom: 30px;
-        }
-        
-        .category-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #495057;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-            display: inline-block;
-        }
-        
-        .links {
-            list-style: none;
+        .header {
+            background-color: #0000aa;
+            color: #ffffff;
+            padding: 5px 10px;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00ff00;
         }
         
-        .links a {
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .prompt {
+            color: #00ff00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .command {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            width: 80%;
+            outline: none;
+            margin-left: 5px;
+        }
+        
+        .output {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .cursor {
             display: inline-block;
-            padding: 12px 25px;
-            background: #f1f3f5;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            width: 8px;
+            height: 16px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            vertical-align: middle;
         }
         
-        .links a:hover {
-            background: #4dabf7;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(77, 171, 247, 0.3);
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
-        footer {
-            margin-top: 50px;
-            color: #6c757d;
-            font-size: 0.9rem;
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .links {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .links a {
-                width: 100%;
-                text-align: center;
-            }
+        .menu-item {
+            border: 1px solid #00ff00;
+            padding: 10px;
+            background-color: #001100;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .menu-item:hover {
+            background-color: #003300;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .footer {
+            background-color: #0000aa;
+            color: #ffffff;
+            padding: 5px 10px;
+            text-align: center;
+            border-top: 2px solid #00ff00;
+            font-size: 14px;
+        }
+        
+        .highlight {
+            color: #ffff00;
+        }
+        
+        .error {
+            color: #ff0000;
+        }
+        
+        .success {
+            color: #00ff00;
+        }
+        
+        .info {
+            color: #00aaff;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #001100;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00aa00;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff00;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Profile" class="profile-img">
-        <h1>王小红</h1>
-        <p class="tagline">用户体验设计师 & 产品经理</p>
-        
-        <div class="category">
-            <h2 class="category-title">我的文章</h2>
-            <ul class="links">
-                <li><a href="#">设计思维</a></li>
-                <li><a href="#">用户研究</a></li>
-                <li><a href="#">产品策略</a></li>
-                <li><a href="#">案例研究</a></li>
-            </ul>
+    <div class="dos-container">
+        <div class="header">
+            <div>MS-DOS 6.22</div>
+            <div>Personal Home Directory</div>
         </div>
         
-        <div class="category">
-            <h2 class="category-title">我的项目</h2>
-            <ul class="links">
-                <li><a href="#">网页设计</a></li>
-                <li><a href="#">移动应用</a></li>
-                <li><a href="#">设计系统</a></li>
-                <li><a href="#">插画作品</a></li>
-            </ul>
+        <div class="content">
+            <div class="output">
+                <span class="success">Microsoft(R) MS-DOS(R) Version 6.22</span><br>
+                <span class="success">(C)Copyright Microsoft Corp 1981-1994.</span><br><br>
+                <span class="info">C:\> </span><span class="highlight">WELCOME.BAT</span><br>
+                <span class="success">Loading personal homepage...</span><br>
+                <span class="success">System initialized successfully.</span><br><br>
+            </div>
+            
+            <div class="output">
+                <span class="info">=== USER PROFILE ===</span><br>
+                <span class="highlight">Name:</span> John Doe<br>
+                <span class="highlight">Title:</span> Software Developer & DOS Enthusiast<br>
+                <span class="highlight">Location:</span> Digital Realm<br>
+                <span class="highlight">Interests:</span> Retro Computing, Programming, Gaming<br><br>
+            </div>
+            
+            <div class="output">
+                <span class="info">=== MAIN MENU ===</span><br>
+                <span class="success">Select an option below or type a command:</span><br><br>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <span class="highlight">1. BLOG</span><br>
+                    Read my latest articles
+                </div>
+                <div class="menu-item">
+                    <span class="highlight">2. PROJECTS</span><br>
+                    View my coding projects
+                </div>
+                <div class="menu-item">
+                    <span class="highlight">3. CONTACT</span><br>
+                    Get in touch with me
+                </div>
+                <div class="menu-item">
+                    <span class="highlight">4. SKILLS</span><br>
+                    My technical abilities
+                </div>
+                <div class="menu-item">
+                    <span class="highlight">5. GAMES</span><br>
+                    Play some retro games
+                </div>
+                <div class="menu-item">
+                    <span class="highlight">6. LINKS</span><br>
+                    Useful resources
+                </div>
+            </div>
+            
+            <div class="output">
+                <br>
+                <span class="info">C:\HOME\></span>
+                <span class="cursor"></span>
+            </div>
         </div>
         
-        <div class="category">
-            <h2 class="category-title">资源分享</h2>
-            <ul class="links">
-                <li><a href="#">设计工具</a></li>
-                <li><a href="#">书籍推荐</a></li>
-                <li><a href="#">学习资源</a></li>
-                <li><a href="#">灵感收集</a></li>
-            </ul>
+        <div class="footer">
+            Press F1 for help | F2 for commands list | F10 to exit
         </div>
     </div>
 
-    <footer>
-        <p>© 2023 王小红 - 简洁个人主页</p>
-    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            const cursor = document.querySelector('.cursor');
+            
+            // 添加命令行交互效果
+            setTimeout(() => {
+                addOutput('Type <span class="highlight">HELP</span> for available commands.');
+            }, 1000);
+            
+            // 模拟闪烁的光标
+            setInterval(() => {
+                cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+            }, 500);
+            
+            // 添加一些随机输出效果
+            setTimeout(() => {
+                addOutput('<span class="info">System:</span> Memory check completed successfully.');
+            }, 3000);
+            
+            // 添加输出函数
+            function addOutput(text) {
+                const output = document.createElement('div');
+                output.className = 'output';
+                output.innerHTML = text;
+                content.insertBefore(output, content.lastElementChild);
+                content.scrollTop = content.scrollHeight;
+            }
+            
+            // 添加键盘交互
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    addOutput('<span class="info">C:\\HOME\\></span> <span class="error">Bad command or file name</span>');
+                    addOutput('<span class="info">C:\\HOME\\></span>');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
